@@ -13,7 +13,7 @@ POST http://localhost:3000/api/users/
 Content-Type: application/json
 
 {
-  "id": "// ID PÅ EN SPECIFIK USER"
+  "id": "64198d48f6aeb647a2569536"
 }
 
 ###
@@ -35,8 +35,8 @@ POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
 {
-  "email": "// USER EMAIL",
-  "password": "// USER PASSWORD"
+  "email": "test@mail.com",
+  "password": "test"
 }
 
 ###
@@ -51,7 +51,7 @@ GET http://localhost:3000/api/products
 ###
 
 // HÄMTA SPECIFIK PRODUKT
-GET http://localhost:3000/api/products/ // ID PÅ EN SPECIFIK PRODUKT
+GET http://localhost:3000/api/products/6419dd670a7d023289e5d923
 
 ###
 
@@ -64,14 +64,14 @@ Content-Type: application/json
   "description": "Beskrivning av produkt 1",
   "price": 100,
   "lager": 10,
-  "category": "// ID PÅ EN SPECIFIK KATEGORI",
-  "token": "1234key1234"
+  "category": "641b2af44f8c87953a87d127",
+  "token": "1234key124"
 }
 
 ###
 
 // HÄMTA ALLA PRODUKTER FÖR EN SPECIFIK KATEGORI
-GET http://localhost:3000/api/products/category/ // ID PÅ EN SPECIFIK KATEGORI
+GET http://localhost:3000/api/products/category/641b2af44f8c87953a87d127
 ###
 
 //
@@ -85,7 +85,7 @@ Content-Type: application/json
 
 {
   "name": "Kategori 1",
-  "token": "1234key1234"
+  "token": "1234key1235"
 }
 
 ###
@@ -100,12 +100,11 @@ GET http://localhost:3000/api/categories
 //
 
 // HÄMTA ALLA ORDERS, KEY MÅSTE ANGES FÖR ATT FÅ TILLGÅNG TILL ORDERS
-GET http://localhost:3000/api/orders/all/ // API TOKEN
-
+GET http://localhost:3000/api/orders/all/1234key1234
 ###
 
 // HÄMTA ALLA ORDER, FEL KEY // SKALL MISSLYCKAS
-GET http://localhost:3000/api/orders/all/ // TEST MED FEL TOKEN
+GET http://localhost:3000/api/orders/all/idontthinkso
 
 ###
 
@@ -114,14 +113,14 @@ POST http://localhost:3000/api/orders/add
 Content-Type: application/json
 
 {
-  "user": "// USER ID FÖR DEN SOM SKA SKAPA ORDERN",
+  "user": "6419dd390a7d023289e5d922",
       "products": [
     {
-      "productId": "// ETT PRODUKT ID",
+      "productId": "641b2e070a834dbc7732db94",
       "quantity": 1
     },
     {
-      "productId": "// ETT PRODUKT ID",
+      "productId": "641b2ffa3ddab6dd636eecee",
       "quantity": 2
     }
   ]

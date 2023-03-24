@@ -3,16 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 
 var indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const productsRouter = require('./routes/products');
 const ordersRouter = require('./routes/orders');
+const categoriesRouter = require('./routes/categories');
 
 
 
 var app = express();
+
+app.use(cors());
+
 
 MongoClient.connect('mongodb://127.0.0.1:27017', { useUnifiedTopology: true }, (err, client) => {
   useUnifiedTopology: true;
@@ -39,6 +44,7 @@ app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/products', productsRouter)
+app.use('/api/categories', categoriesRouter)
 
 
 // catch 404 and forward to error handler

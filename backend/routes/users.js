@@ -5,7 +5,8 @@ const ObjectId = require('mongodb').ObjectId;
 
 
 const router = express.Router();
-const secret_key = '1234key1234'; // TODO move to .env file
+
+
 
 router.get('/', function (req, res, next) {
    req.app.locals.db.collection('users').find({}, { projection: { userPassword: 0 } }).toArray()
@@ -21,6 +22,9 @@ router.get('/', function (req, res, next) {
 router.post('/', async function (req, res, next) {
    try {
      const result = await req.app.locals.db.collection('users').findOne({ _id: new ObjectId(req.body.id) });
+     if (!result) {
+       return res.status(404).send('User Not Found');
+     }
      res.send(result);
    } catch (err) {
      console.log('Error Accessing user Database ' + err);
@@ -37,17 +41,17 @@ router.post('/login', function (req, res, next) {
    req.app.locals.db.collection('users').findOne({ userEmail: loginEmail })
       .then((result) => {
          if (!result) {
-            return res.status(401).send('User Name Not found');
+            return res.status(401).send({message:'User Name Not found'});
          }
          const hashedLoginPassword = CryptoJS.SHA256(loginPassword).toString();
          if (result.userPassword !== hashedLoginPassword) {
-            return res.status(401).send('Password is Incorrect');
+            return res.status(401).send({message:'Password is Incorrect'});
          }
-         return res.status(200).send('Login Successful');
+         return res.status(200).send(result);
       })
       .catch((err) => {
          console.log('Server Error');
-         return res.status(500).send('Internal Server Error ' + err);
+         return res.status(500).send({message:'Internal Server Error ' + err});
       });
 });
 
