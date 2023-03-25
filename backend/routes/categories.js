@@ -7,7 +7,7 @@ function apiKeyVerifier(req, res, next) {
   const apiKey = req.body.token;
 
   if (!apiKey) {
-    return res.status(401).send('Missing API key');
+    return res.status(400).send('Missing API key');
   }
 
   if (apiKey !== process.env.API_KEY) {

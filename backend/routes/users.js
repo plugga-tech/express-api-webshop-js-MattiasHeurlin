@@ -41,7 +41,7 @@ router.post('/login', function (req, res, next) {
    req.app.locals.db.collection('users').findOne({ userEmail: loginEmail })
       .then((result) => {
          if (!result) {
-            return res.status(401).send({message:'User Name Not found'});
+            return res.status(404).send({message:'User Name Not found'});
          }
          const hashedLoginPassword = CryptoJS.SHA256(loginPassword).toString();
          if (result.userPassword !== hashedLoginPassword) {

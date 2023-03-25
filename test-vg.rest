@@ -65,7 +65,7 @@ Content-Type: application/json
   "price": 100,
   "lager": 10,
   "category": "641b2af44f8c87953a87d127",
-  "token": "1234key124"
+  "token": "1234key123H"
 }
 
 ###

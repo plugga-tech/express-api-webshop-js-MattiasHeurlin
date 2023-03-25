@@ -70,6 +70,8 @@ export default defineComponent({
         state.emptyfields = false;
         state.loggedin = true;
         user.value = data;
+        email.value = "";
+        password.value = "";
 
         console.log("Logged In User:", data);
       } catch (err) {
@@ -157,8 +159,6 @@ export default defineComponent({
 
     async function sendOrder() {
       const cart = JSON.parse(localStorage.getItem("cart"));
-      console.log("Cart:", cart); // FIXME: Remove
-      console.log("User:", user.value._id);
       try {
         const response = await fetch("http://localhost:3000/api/orders/add", {
           method: "POST",
@@ -186,8 +186,6 @@ export default defineComponent({
 
     async function getOrderHistory() {
       const token = import.meta.env.VITE_API_KEY;
-      console.log("User:", user.value._id);
-      console.log("Token:", token); // FIXME: Remove
       try {
         const response = await fetch("http://localhost:3000/api/orders/user", {
           method: "POST",
@@ -206,6 +204,7 @@ export default defineComponent({
         const data = await response.json();
         orderHistory.value = data;
         state.orderHistory = true;
+        console.log(state.orderHistory)
         console.log("Order History:", data);
       } catch (err) {
         console.error("Error:", err);
@@ -237,11 +236,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <main class="flex flex-col">
+  <main>
     <header class="flex justify-center content-center">
       <h1 class="text-4xl text-info">WebShop</h1>
     </header>
-    <section class="p-8 w-1/2" v-if="!state.loggedin">
+    <section class="p-8 w-1/2 loginPage shadow-2xl" v-if="!state.loggedin">
       <div class="w-full h-full flex justify-center content-center">
         <div
           v-if="!state.createUser"
@@ -411,7 +410,7 @@ export default defineComponent({
         </div>
       </div>
     </section>
-    <section v-if="state.loggedin" class="flex w-full mainSection">
+    <section v-if="state.loggedin && !state.orderHistory" class="flex w-full mainSection relative">
       <div class="flex flex-col gap-6 cartSection">
         <div>
           <h2 class="text-3xl text-primary">Varukorg:</h2>
@@ -426,15 +425,25 @@ export default defineComponent({
               <p class="text-info">
                 {{ product.name }}
               </p>
-              <p>{{ product.price }}kr</p>
+              <p>Pris: {{ product.price }}kr</p>
               <p>
                 Antal: <span class="text-info"> {{ product.quantity }} </span>
               </p>
-              <i
-                class="fa-solid fa-xmark text-red-500 text-xl"
-                @click="removeProductFromCart(product)"
-              >
-              </i>
+              <button>
+                <i
+                  class="fa-solid fa-plus text-success text-xl"
+                  @click="addProductToCart(product)"
+                >
+                </i>
+              </button>
+              <button>
+                <i
+                  class="fa-solid fa-minus text-error text-xl"
+                  @click="removeProductFromCart(product)"
+                >
+                </i>
+              </button>
+            
             </li>
           </ul>
 
@@ -460,26 +469,40 @@ export default defineComponent({
         <h3 class="text-2xl mt-4 text-info">Produkter:</h3>
         <products @add-to-cart="addProductToCart"></products>
       </div>
+      <button @click="state.loggedin = false" class="absolute top-6 right-10 text-error text-xl">LOGGA UT</button>
     </section>
 
     <article v-if="state.orderHistory" class="orderHistory">
-      <div>
-        <h2 class="text-3xl text-primary">Order Historik:</h2>
-        <ul class="flex flex-wrap">
-          <li class="flex flex-col orderHistoryItem" v-for="order in orderHistory">
-            <div class="flex">
-              <p>Order ID: {{ order._id }}</p>
-              <p>Order Produkter:</p>
-            </div>
-            <ul class="flex">
-              <li v-for="product in order.products">
-                <p>Produkt Namn: {{ product.name }}</p>
-                <p>Produkt Pris: {{ product.price }}kr</p>
-                <p>Produkt Antal: {{ product.quantity }}</p>
+      <div> <!-- Vet att dessa borde ligga i en component, hinner ej -->
+        <h2 class="text-3xl text-primary mt-4 mb-6">Order Historik:</h2>
+        <ul class="flex gap-4 flex-wrap orderHistoryList">
+          <li
+            class="flex flex-col orderHistoryItem p-4 rounded-md shadow-md mb-4"
+            v-for="order in orderHistory"
+          >
+            <p class="font-semibold">
+              Order ID: <br />
+            <span class="text-info">  {{ order._id }}</span>
+            </p>
+            <p class="font-semibold">Order Produkter:</p>
+
+            <ul class="flex flex-col gap-2">
+              <li class="p-2 rounded-md" v-for="product in order.products">
+                <div class="flex flex-col gap-1">
+                  <p>
+                    Produkt Namn:
+                    <span class="text-info">{{ product.name }}</span>
+                  </p>
+                  <p>
+                    Produkt Antal:
+                    <span class="text-info"> {{ product.quantity }}</span>
+                  </p>
+                </div>
               </li>
             </ul>
           </li>
         </ul>
+        <button @click="state.orderHistory = false" class="absolute top-6 right-6 text-xl text-primary">STÄNG</button>
       </div>
     </article>
   </main>
@@ -488,10 +511,20 @@ export default defineComponent({
 <style scoped>
 section {
   margin: 0 auto;
-  background-color: rgba(3, 60, 116, 0.444);
+  background-color: rgba(0, 32, 64, 0.821);
+ 
 }
+
+.orderHistoryList > li:nth-child(odd) {
+  background-color: rgb(0, 26, 45);
+}
+.orderHistoryList > li:nth-child(even) {
+  background-color: rgb(5, 37, 48);
+}
+
 .mainSection {
-  min-height: 80vh;
+  min-height: 90vh;
+  max-width: 2200px;
 }
 .loginform {
   background-color: rgba(5, 113, 149, 0.391);
@@ -505,14 +538,13 @@ section {
   margin-right: 20px;
 }
 .orderHistory {
-  position: fixed;
-  width: 100%;
-  height: 100%;
+  padding: 50px 30px;
   background-color: rgb(0, 17, 34);
+  min-height: 90vh;
 }
 
 .orderHistory > div {
-  background-color: rgba(5, 113, 149, 0.391);
+  background-color: rgba(26, 48, 73, 0.81);
   padding: 20px 30px;
   border-radius: 10px;
   margin: 0 auto;
@@ -520,11 +552,16 @@ section {
   width: 80%;
   height: 80%;
   overflow: scroll;
+  position: relative;
 }
 
 .orderItems {
   background-color: rgba(5, 113, 149, 0.391);
   padding: 10px 20px;
   border-radius: 10px;
+}
+
+.loginPage {
+  border-radius: 30px 0;
 }
 </style>

@@ -33,7 +33,7 @@ export default defineComponent({
 
 <template>
   <ul class="flex flex-wrap gap-4 m-8">
-    <li class="p-5 flex flex-col gap-2" v-for="product in products" :key="product.id">
+    <li class="p-5 flex flex-col gap-2 shadow-2xl" v-for="product in products" :key="product.id">
       <h3 class="text-xl text-center text-accent">{{ product.name }}</h3>
       <img width="100" height="100" loading="lazy" src="https://via.placeholder.com/200x200/31367a/e6e6e6?text=PLACEHOLDER">
       <p class="text-base">{{ product.description }}</p>
@@ -47,7 +47,7 @@ export default defineComponent({
 
 <style scoped>
  li {
-  background-color: rgb(32, 68, 101);
+  background-color: rgba(28, 48, 79, 0.604);
   border-radius: 10px;
  }
  img {
