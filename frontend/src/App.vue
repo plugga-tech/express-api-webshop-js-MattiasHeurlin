@@ -11,13 +11,14 @@ export default defineComponent({
   setup() {
     const state = reactive({
       orderHistory: [],
-      loggedin: false, // TODO: Change to false to test login - change back to false when done
+      loggedin: false, 
       createUser: false,
       wrongLogin: false,
       emptyfields: false,
       passwordNotMatch: false,
       userCreated: false,
       orderHistory: false,
+      updateCart:  0,
     });
 
     const currenCart = ref([]);
@@ -182,6 +183,7 @@ export default defineComponent({
         console.log("New Order:", data);
         localStorage.removeItem("cart");
         currenCart.value = [];
+        state.updateCart++;
       } catch (err) {
         console.error("Error:", err);
       }
@@ -470,7 +472,7 @@ export default defineComponent({
           Välkommen {{ user.userName }}
         </h2>
         <h3 class="text-2xl mt-4 text-info">Produkter:</h3>
-        <products @add-to-cart="addProductToCart"></products>
+        <products :key="state.updateCart" @add-to-cart="addProductToCart"></products>
       </div>
       <button @click="state.loggedin = false" class="absolute top-6 right-10 text-error text-xl">LOGGA UT</button>
     </section>

@@ -44,6 +44,8 @@ export default defineComponent({
       emit("add-to-cart", product);
     }
 
+  
+
     return {
       products,
       updateProducts,
@@ -56,22 +58,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <h1 class="text-4xl text-center my-4">Produkter</h1>
-    <div class="flex items-center">
-      <label class="text-xl text-neutral text-center my-4 mr-4"
-        >Välj Kategori:</label
-      >
-      <select
-        class="select select-info w-full max-w-xs"
-        v-model="selectedCategoryId"
-      >
-        <option value="">Alla</option>
-        <option v-for="category in categories" :value="category._id">
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
+ 
     <section class="flex flex-wrap">
       <div v-for="category in categories" :key="category._id">
         <h2 class="text-2xl text-center my-4">{{ category.name }}</h2>
@@ -107,7 +94,6 @@ export default defineComponent({
         </ul>
       </div>
     </section>
-  </div>
 </template>
 
 <style scoped>
