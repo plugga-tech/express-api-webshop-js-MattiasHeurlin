@@ -7,12 +7,12 @@ function apiKeyVerifier(req, res, next) {
   const apiKey = req.body.token;
 
   if (!apiKey) {
-    return res.status(400).send('Missing API key');
+    return res.status(400).send({ message: 'Missing API key'});
   }
 
   if (apiKey !== process.env.API_KEY) {
     console.log('' + apiKey + ' ' + process.env.API_KEY)
-    return res.status(401).send('Invalid API key');
+    return res.status(401).send({ message: 'Invalid API key' });
   }
 
   next();
@@ -22,8 +22,8 @@ router.get('/', (req, res) => {
   req.app.locals.db.collection('categories').find({}).toArray()
     .then(categories => res.send(categories))
     .catch(err => {
-      console.log('Error fetching categories:', err);
-      res.status(500).send('Error fetching categories:', err);
+      console.log('Error Accessing Database', err);
+      res.status(500).send( { message: 'Error Accessing Database ' + err });
     });
 });
 
@@ -35,10 +35,10 @@ router.post('/add', apiKeyVerifier, (req, res) => {
     return res.status(400).send('Missing Fields');
   }
   req.app.locals.db.collection('categories').insertOne(newCategory)
-    .then(result => res.send('Category Added ' + result))
+    .then(result => res.send({ message: 'Category Added ' + result}))
     .catch(err => {
       console.log('Error adding category:', err);
-      res.status(500).send('Error adding category:', err);
+      res.status(500).send({ message: 'Error Acessing Database ' + err});
     });
 });
 

@@ -58,12 +58,18 @@ export default defineComponent({
           }),
         });
 
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 404) {
           state.emptyfields = false;
           state.wrongLogin = true;
+          password.value = "";
           return;
         }
 
+        if (!response.ok) {
+          console.log("Error" + response.status);
+          password.value = "";
+          return;
+        }
         const data = await response.json();
 
         state.wrongLogin = false;
@@ -76,9 +82,6 @@ export default defineComponent({
         console.log("Logged In User:", data);
       } catch (err) {
         console.error("Error:", err);
-        state.wrongLogin = true;
-        state.emptyfields = false;
-        password.value = "";
       }
     }
 

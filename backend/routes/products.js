@@ -11,7 +11,7 @@ function apiKeyVerifier(req, res, next) {
   }
 
   if (apiKey !== process.env.API_KEY) {
-     console.log('' + apiKey + ' ' + process.env.API_KEY)
+    
     return res.status(401).send('Invalid API key');
   }
 
